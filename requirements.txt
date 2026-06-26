@@ -1,0 +1,7 @@
+pypdf
+langchain-text-splitters
+sentence-transformers
+qdrant-client
+boto3
+fastapi
+uvicorn
