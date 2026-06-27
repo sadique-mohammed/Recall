@@ -1,10 +1,10 @@
-{"query": "What is language identification from audio?", "relevant_chunk_ids": ["637bd5cb7acd"]}
-{"query": "What is the baseline model and its accuracy for language identification?", "relevant_chunk_ids": ["f45e9e244ac2"]}
-{"query": "Why does having only 5 speakers per language cause a problem?", "relevant_chunk_ids": ["710f4d0248de"]}
-{"query": "What constraints apply to the model in the language identification project?", "relevant_chunk_ids": ["637bd5cb7acd", "f45e9e244ac2"]}
-{"query": "What is Bangla-BERT?", "relevant_chunk_ids": ["5e614ddb9e74", "d25381b0791c"]}
-{"query": "How large is the BanglaLM dataset used to train Bangla-BERT?", "relevant_chunk_ids": ["d25381b0791c"]}
-{"query": "What two limitations of mBERT does Bangla-BERT address?", "relevant_chunk_ids": ["42fac9785d9e"]}
-{"query": "What is the mGAP dataset?", "relevant_chunk_ids": ["1ea0ecd68c91"]}
-{"query": "What two models are proposed for coreference resolution?", "relevant_chunk_ids": ["419eef118ba5"]}
-{"query": "Which coreference model performed better, JEM or CAM?", "relevant_chunk_ids": ["8813c6dfa760"]}
+{"query": "What is the BenCoref dataset?", "relevant_chunk_ids": ["ea08045b29dc", "684e6cc4b1e0"]}
+{"query": "What is the main contribution of the end-to-end neural coreference resolution model?", "relevant_chunk_ids": ["a8d9befd646e", "d97b0c99901d"]}
+{"query": "How does SpanBERT change BERT's pre-training objective?", "relevant_chunk_ids": ["53709eb98573", "fbbd062b3389"]}
+{"query": "What is MuRIL and what languages was it pre-trained on?", "relevant_chunk_ids": ["289b7b167a5d", "f6d8372b6544"]}
+{"query": "What is the mGAP dataset?", "relevant_chunk_ids": ["f31ed0a70077", "ca696faaead2"]}
+{"query": "What two models does the Bridge the GAP paper propose for coreference resolution?", "relevant_chunk_ids": ["6d5d72f8eced"]}
+{"query": "What dataset is Bangla-BERT pre-trained on and how large is it?", "relevant_chunk_ids": ["a26ee6c735ea"]}
+{"query": "What does the paper 'What Would ELSA Do?' investigate about transformer fine-tuning?", "relevant_chunk_ids": ["4406f3cde643", "6f834fb6e23d"]}
+{"query": "What does the BanglaBERT paper propose for low-resource Bangla language understanding?", "relevant_chunk_ids": ["fde22cf8e95b", "06187866a2e1"]}
+{"query": "How is the multilingual coreference dataset for South Asian languages created?", "relevant_chunk_ids": ["c4e405dc47e9", "b3ca1ba16609"]}
