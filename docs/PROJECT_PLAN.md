@@ -85,7 +85,7 @@ rag-eval-pipeline/
 - **Ingestion** — done. Reads PDFs from S3 (local fallback), chunks with overlap, assigns stable chunk IDs.
 - **Index & retrieve** — done. Chunks embedded and indexed in Qdrant; a shared `DenseRetriever` returns ranked chunk IDs.
 - **Generate & serve** — done. `generate.py` builds a grounded prompt and calls Bedrock; `api/main.py` exposes `GET /health` and `POST /ask` returning an answer plus source chunk IDs.
-- **Evaluate** — done. Hand-labelled eval set scored with recall@k / hit-rate@k / MRR. Baseline: recall@10 0.90, MRR 0.71.
+- **Evaluate** — done. Hand-labelled eval set scored with recall@k / hit-rate@k / MRR over a 9-paper corpus (249 chunks). Baseline: recall@10 0.95, MRR 0.79.
 - **Stretch (optional, not done):** hybrid retrieval and/or a cross-encoder reranker, reported as before/after deltas on the same eval set; containerisation (Docker) and a scale-to-zero deployment.
 
 ## 7. Evaluation methodology
