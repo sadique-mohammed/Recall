@@ -6,7 +6,7 @@ import boto3
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 
-from rag.build_index import MODEL_NAME, STORAGE_PATH, search
+from rag.build_index import MODEL_NAME, QDRANT_HOST, QDRANT_PORT, search
 
 REGION = "eu-central-1"
 # Frankfurt invokes models through a regional inference profile (the "eu." prefix).
@@ -27,7 +27,7 @@ def _model() -> SentenceTransformer:
 
 @lru_cache(maxsize=1)
 def _qdrant() -> QdrantClient:
-    return QdrantClient(path=STORAGE_PATH)
+    return QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
 
 @lru_cache(maxsize=1)

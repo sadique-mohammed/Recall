@@ -9,7 +9,8 @@ from rag.ingest import load_chunks
 COLLECTION = "documents"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 VECTOR_SIZE = 384
-STORAGE_PATH = "./qdrant_storage"
+QDRANT_HOST = "localhost"
+QDRANT_PORT = 6333
 
 
 def build_index(client: QdrantClient, model: SentenceTransformer) -> int:
@@ -48,7 +49,7 @@ def search(client: QdrantClient, model: SentenceTransformer, query: str, k: int 
 
 def main() -> None:
     model = SentenceTransformer(MODEL_NAME)
-    client = QdrantClient(path=STORAGE_PATH)
+    client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
     indexed = build_index(client, model)
     if not indexed:
