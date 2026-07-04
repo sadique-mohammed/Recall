@@ -5,3 +5,4 @@ qdrant-client
 boto3
 fastapi
 uvicorn
+mcp[cli]

@@ -152,6 +152,21 @@ curl -X POST http://127.0.0.1:8000/ask \
 
 The response contains the generated `answer` and the `sources` (chunk IDs) it was drawn from.
 
+## MCP server (agent tools)
+
+The pipeline is also exposed as an [MCP](https://modelcontextprotocol.io) server, so
+MCP-capable AI agents and clients can use it as a set of tools:
+
+- `search_documents(query, k)` — search the corpus, returns ranked chunks
+- `ask_question(question, k)` — grounded answer with source chunk IDs (via Bedrock)
+- `evaluate_retrieval()` — score the retriever against the labeled eval set
+
+Run it with the MCP Inspector for local testing (requires Node.js; Qdrant must be running):
+
+```bash
+mcp dev mcp_server/server.py
+```
+
 ## Evaluation methodology
 
 Retrieval is scored across k = 1, 3, 5, 10 so that a retrieval problem (low recall@10) is
