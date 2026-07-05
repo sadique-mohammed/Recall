@@ -39,8 +39,13 @@ def _format_context(hits) -> str:
     return "\n\n".join(f"[{h.payload['source']}]\n{h.payload['text']}" for h in hits)
 
 
-def answer_question(question: str, k: int = 3) -> tuple[str, list[str]]:
-    hits = search(_qdrant(), _model(), question, k)
+def retrieve_chunks(question: str, k: int = 3):
+    """Retrieve the top-k chunks for a question (kept separate for graph orchestration)."""
+    return search(_qdrant(), _model(), question, k)
+
+
+def generate_from_chunks(question: str, hits) -> str:
+    """Generate a grounded answer from already-retrieved chunks."""
     response = _bedrock().converse(
         modelId=BEDROCK_MODEL_ID,
         system=[{"text": SYSTEM_PROMPT}],
@@ -54,12 +59,17 @@ def answer_question(question: str, k: int = 3) -> tuple[str, list[str]]:
         ],
         inferenceConfig={"maxTokens": 512, "temperature": 0.2},
     )
-    answer = response["output"]["message"]["content"][0]["text"]
+    return response["output"]["message"]["content"][0]["text"]
+
+
+def answer_question(question: str, k: int = 3) -> tuple[str, list[str]]:
+    hits = retrieve_chunks(question, k)
+    answer = generate_from_chunks(question, hits)
     return answer, [hit.payload["chunk_id"] for hit in hits]
 
 
 def main() -> None:
-    question = "What is language identification from audio?"
+    question = "What is the BenCoref dataset?"
     answer, sources = answer_question(question)
     print(f"Q: {question}\n")
     print(answer)
