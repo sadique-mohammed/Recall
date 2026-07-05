@@ -2,8 +2,8 @@
 
 Retrieval-augmented question answering over a corpus of NLP research papers (coreference
 resolution and low-resource language modeling) — the kind of literature review this was
-built to make searchable. Ask a question, get an answer grounded in the source papers
-with citations.
+built to make searchable. A grounded question-answering backend and retrieval-evaluation
+harness: ask a question, get an answer grounded in the source papers with citations.
 
 The project is built around a **from-scratch retrieval evaluation harness**: the emphasis
 is on *measuring* retrieval quality — recall@k, hit-rate@k, and MRR — rather than just
@@ -42,25 +42,25 @@ hand-computed values, rather than imported from an evaluation library.
 
 ## Architecture
 
-```
-  AWS S3 (PDFs)
-       │
-       ▼
-   ingest  ──►  chunk  ──►  embed (bge-small)  ──►  Qdrant (Docker)
-                                                      │
-                                                  retriever
-                                   ┌──────────────────┴──────────────────┐
-                                   ▼                                      ▼
-                          eval harness (offline)                 FastAPI /ask (online)
-                          recall@k · hit@k · MRR                         │
-                                                                         ▼
-                                                              Amazon Bedrock (Nova)
-                                                                answer + source IDs
+```mermaid
+flowchart TD
+    S3[("AWS S3<br/>research papers")] --> ING["ingest &rarr; chunk &rarr; embed<br/>(bge-small)"]
+    ING --> Q[("Qdrant<br/>(Docker)")]
+    Q --> R["shared retriever"]
+
+    R --> EV["eval harness (offline)<br/>recall@k &middot; hit-rate@k &middot; MRR"]
+    R --> API["FastAPI service (online)<br/>POST /ask &middot; GET /health"]
+    R --> AG["LangGraph agent<br/>retrieve &rarr; generate &rarr; verify<br/>bounded retry"]
+    R --> MCP["MCP server (agent tools)<br/>search_documents &middot; ask_question &middot; evaluate_retrieval"]
+
+    API --> BR["Amazon Bedrock (Nova)<br/>answer + source chunk IDs"]
+    AG --> BR
+    MCP --> BR
 ```
 
-The retriever is a single shared component: the offline harness and the online API score
-and serve the *same* retrieval logic, so a change in retrieval strategy is measured and
-exposed through one code path with no duplication.
+The retriever is a single shared component with four consumers — the offline evaluation
+harness, the FastAPI service, the LangGraph agent, and the MCP server — so a change in
+retrieval strategy is measured and exposed through one code path with no duplication.
 
 ## Tech stack
 
@@ -178,16 +178,18 @@ mcp dev mcp_server/server.py
 The pipeline can also run as a minimal LangGraph agent with a bounded
 self-correction loop:
 
-```
-retrieve ──► generate ──► verify ──► END
-    ▲                        │
-    └── widen k, retry ◄─────┘   (once, if the answer is not grounded)
+```mermaid
+flowchart LR
+    RT["retrieve"] --> GEN["generate"] --> V{"verify:<br/>grounded?"}
+    V -- "yes" --> E((END))
+    V -- "no &amp; attempts left" --> W["widen k (&times;2)"] --> RT
+    V -- "no &amp; attempt cap hit" --> E
 ```
 
 The verify node makes a second, cheap model call to judge whether the answer is
 supported by the retrieved context. If not, the graph widens retrieval (k doubled)
 and retries once before finishing — so an ungrounded answer triggers a corrective
-action, but the loop is strictly bounded.
+action, but the loop is strictly bounded (`MAX_ATTEMPTS = 2`).
 
 ```bash
 python -m agent.graph
